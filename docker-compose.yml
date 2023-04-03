@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  realtime-events:
+    platform: linux/amd64
+    container_name: realtime-events
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - realtime-events-net
+    image: realtime-events
+    volumes:
+      - .:/realtime-events
+    ports:
+      - 5000:5000
+      - 5001:5001
+    environment:
+      - DEBUG=1
+    env_file:
+      - .env
+    command: python -m debugpy --listen 0.0.0.0:5001 -m uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload  --log-level trace --ws websockets
+networks:
+  realtime-events-net:
+    external: false
